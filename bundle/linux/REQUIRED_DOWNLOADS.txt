@@ -1,10 +1,11 @@
 Gemma 3 Linux server offline bundle: required files
 
 Preferred method
-- Download only the files under bundle/linux/ and docs/LINUX_GEMMA3_OPENAI_OFFLINE_SETUP.md if the full repository is too large for your environment.
-- Keep the directory structure exactly as shown.
+- Download both GitHub repositories: `gemma` and `gemma-2`.
+- Place the extracted folders under the same parent directory.
+- Keep each directory structure exactly as shown.
 
-Files and directories required for offline setup
+Files and directories required from the primary repo
 - docs/LINUX_GEMMA3_OPENAI_OFFLINE_SETUP.md
 - bundle/linux/install-gemma3-openai-offline.sh
 - bundle/linux/start-gemma3-openai-server.sh
@@ -16,6 +17,14 @@ Files and directories required for offline setup
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-02
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-03
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-04
+
+Files and directories required from the secondary repo `gemma-2`
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-05
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-06
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-07
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-08
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-09
+- bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-10
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-05
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-06
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-07

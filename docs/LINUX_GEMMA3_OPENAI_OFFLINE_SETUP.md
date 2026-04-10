@@ -2,6 +2,11 @@
 
 この repo には、Linux x86_64 サーバ向けに `Gemma 3 1B` を OpenAI 互換 API として起動するためのオフライン bundle を含めています。
 
+モデル分割ファイルは `500MB` 制約に合わせて 2 repo に分かれています。
+
+- primary repo: `gemma`
+- secondary repo: `gemma-2`
+
 ## 採用構成
 
 - モデル: `Gemma 3 1B IT QAT`
@@ -24,9 +29,11 @@
 ## 含まれるもの
 
 - `bundle/linux/vendor/llama.cpp/llama-b8740-bin-ubuntu-x64.tar.gz`
-- `bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-*`
+- `bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-00` から `part-04`
 - `bundle/linux/install-gemma3-openai-offline.sh`
 - `bundle/linux/start-gemma3-openai-server.sh`
+
+`part-05` から `part-10` は `gemma-2` repo 側にあります。
 
 ## 前提
 
@@ -38,7 +45,27 @@
 
 ## セットアップ
 
-repo ルートで以下を実行します。
+2 つの repo を同じ親ディレクトリに配置します。
+
+GitHub ZIP の場合:
+
+```text
+/opt/offline/
+  gemma-main/
+  gemma-2-main/
+```
+
+clone の場合:
+
+```text
+/opt/offline/
+  gemma/
+  gemma-2/
+```
+
+`install-gemma3-openai-offline.sh` は、同じ親ディレクトリにある `gemma-2` または `gemma-2-main` から不足 model part を自動検出します。
+
+その上で primary repo 側の repo ルートで以下を実行します。
 
 ```bash
 chmod +x bundle/linux/install-gemma3-openai-offline.sh
@@ -48,7 +75,7 @@ chmod +x bundle/linux/install-gemma3-openai-offline.sh
 この処理で実行される内容:
 
 - `llama.cpp` binary を `artifacts/linux-gemma3-openai/llama.cpp/` に展開
-- 分割された GGUF を `artifacts/linux-gemma3-openai/models/gemma3-1b-it-qat.gguf` に再結合
+- `gemma` と `gemma-2` の両 repo に分かれた GGUF part を `artifacts/linux-gemma3-openai/models/gemma3-1b-it-qat.gguf` に再結合
 - SHA256 を検証
 
 ## 起動
@@ -96,3 +123,4 @@ Windows 側 repo ルートで以下を実行します。
 - そのため、Windows 側では `-DisableOllama` を付けて `OpenAIBaseUrl` を指定します。
 - `Gemma 3 1B` は軽量優先のため、品質は `4B` 以上より落ちます。
 - ただし今回のサーバスペックとオフライン制約では現実的な選択です。
+- `gemma-2` repo が同じ親ディレクトリに無いと、再結合に必要な model part が不足して install に失敗します。

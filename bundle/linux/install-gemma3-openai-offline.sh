@@ -14,6 +14,10 @@ MODEL_PART_DIR="${SCRIPT_DIR}/vendor/models"
 MODEL_DIR="${ARTIFACTS_DIR}/models"
 MODEL_PATH="${MODEL_DIR}/gemma3-1b-it-qat.gguf"
 MODEL_SHA256="57c9b4a897df8d1ba26a152eb7b98e8dc743e21a5d5492f8183270565b84932b"
+MODEL_PART_EXTRA_DIRS_DEFAULT=(
+    "${REPO_ROOT}/../gemma-2/bundle/linux/vendor/models"
+    "${REPO_ROOT}/../gemma-2-main/bundle/linux/vendor/models"
+)
 
 file_size() {
     stat -c '%s' "$1"
@@ -59,7 +63,57 @@ verify_or_fail() {
     fi
 }
 
-verify_model_parts_or_fail() {
+resolve_part_path_or_fail() {
+    local filename="$1"
+    local path
+    local found_path=""
+    local search_dir
+
+    for search_dir in "${MODEL_PART_SEARCH_DIRS[@]}"; do
+        [[ -d "$search_dir" ]] || continue
+        path="${search_dir}/${filename}"
+        if [[ -f "$path" ]]; then
+            if [[ -n "$found_path" ]]; then
+                echo "ERROR: Duplicate split file was found for ${filename}" >&2
+                echo "  first:  $found_path" >&2
+                echo "  second: $path" >&2
+                exit 1
+            fi
+            found_path="$path"
+        fi
+    done
+
+    if [[ -z "$found_path" ]]; then
+        echo "ERROR: Missing split file: $filename" >&2
+        echo "  searched directories:" >&2
+        for search_dir in "${MODEL_PART_SEARCH_DIRS[@]}"; do
+            echo "  - $search_dir" >&2
+        done
+        exit 1
+    fi
+
+    printf '%s\n' "$found_path"
+}
+
+build_model_part_search_dirs() {
+    local extra_dir
+
+    MODEL_PART_SEARCH_DIRS=("$MODEL_PART_DIR")
+
+    for extra_dir in "${MODEL_PART_EXTRA_DIRS_DEFAULT[@]}"; do
+        MODEL_PART_SEARCH_DIRS+=("$extra_dir")
+    done
+
+    if [[ -n "${MODEL_PART_EXTRA_DIRS:-}" ]]; then
+        IFS=':' read -r -a user_extra_dirs <<< "${MODEL_PART_EXTRA_DIRS}"
+        for extra_dir in "${user_extra_dirs[@]}"; do
+            [[ -n "$extra_dir" ]] || continue
+            MODEL_PART_SEARCH_DIRS+=("$extra_dir")
+        done
+    fi
+}
+
+prepare_model_parts_or_fail() {
     local expected
     local rel_path
     local path
@@ -74,21 +128,15 @@ verify_model_parts_or_fail() {
         [[ -n "${expected:-}" ]] || continue
         [[ "${rel_path:-}" == vendor/models/gemma3-1b-it-qat.gguf.part-* ]] || continue
 
-        path="${SCRIPT_DIR}/${rel_path}"
+        path="$(resolve_part_path_or_fail "$(basename "$rel_path")")"
         echo "[*] Verifying split file $(basename "$path")"
         verify_or_fail "$path" "$expected"
+        MODEL_PARTS+=("$path")
         expected_count=$((expected_count + 1))
     done < "$CHECKSUMS_FILE"
 
     if (( expected_count == 0 )); then
         echo "ERROR: No split-file checksums were found in $CHECKSUMS_FILE" >&2
-        exit 1
-    fi
-
-    if (( expected_count != ${#MODEL_PARTS[@]} )); then
-        echo "ERROR: Split-file count mismatch" >&2
-        echo "  expected count: $expected_count" >&2
-        echo "  actual count:   ${#MODEL_PARTS[@]}" >&2
         exit 1
     fi
 }
@@ -110,16 +158,9 @@ if [[ ! -x "$LLAMA_SERVER" ]]; then
     exit 1
 fi
 
-shopt -s nullglob
-MODEL_PARTS=("${MODEL_PART_DIR}"/gemma3-1b-it-qat.gguf.part-*)
-shopt -u nullglob
-
-if [[ "${#MODEL_PARTS[@]}" -eq 0 ]]; then
-    echo "ERROR: GGUF split files were not found in $MODEL_PART_DIR" >&2
-    exit 1
-fi
-
-verify_model_parts_or_fail
+build_model_part_search_dirs
+MODEL_PARTS=()
+prepare_model_parts_or_fail
 
 model_total_bytes=0
 for model_part in "${MODEL_PARTS[@]}"; do
