@@ -10,3 +10,10 @@ Gemma 3 Linux server offline bundle sources
 - Asset: llama-b8740-bin-ubuntu-x64.tar.gz
 - URL: https://github.com/ggml-org/llama.cpp/releases/download/b8740/llama-b8740-bin-ubuntu-x64.tar.gz
 - SHA256: aa06af98d4588248e3480acda2eca2daaf49867a42fd0c114c67cb618b39b203
+
+3. Bundled C++ runtime for RHEL 9.2 compatibility
+- Package: libstdcxx 14.3.0 (Anaconda linux-64)
+- Artifact: libstdcxx-14.3.0-h39759b7_4.tar.bz2
+- URL: https://repo.anaconda.com/pkgs/main/linux-64/libstdcxx-14.3.0-h39759b7_4.tar.bz2
+- Bundled file: vendor/runtime/lib/libstdc++.so.6
+- Bundled SHA256: bcb1a2e57f3efacc46bd7cd7eec003cd21689a8865250167aa0aafc31675b03a

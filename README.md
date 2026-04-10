@@ -12,6 +12,7 @@
 この repo には以下を含めています。
 
 - `llama.cpp` Linux x64 runtime
+- RHEL 9.2 / `GLIBCXX_3.4.29` 環境向けの bundled `libstdc++.so.6`
 - install / start script
 - モデル split file `part-00` から `part-04`
 - 手順書 `docs/LINUX_GEMMA3_OPENAI_OFFLINE_SETUP.md`
@@ -48,6 +49,8 @@ chmod +x bundle/linux/start-gemma3-openai-server.sh
 ./bundle/linux/install-gemma3-openai-offline.sh
 API_KEY=dummy ./bundle/linux/start-gemma3-openai-server.sh
 ```
+
+`start-gemma3-openai-server.sh` は、同梱の `bundle/linux/vendor/runtime/lib/libstdc++.so.6` を自動で `LD_LIBRARY_PATH` に追加します。RHEL 9.2 で出る `GLIBCXX_3.4.30 not found` を回避するためです。
 
 ## OpenWebUI からの接続
 

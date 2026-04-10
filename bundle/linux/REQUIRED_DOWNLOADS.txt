@@ -12,6 +12,7 @@ Files and directories required from the primary repo
 - bundle/linux/vendor/SHA256SUMS.txt
 - bundle/linux/vendor/SOURCES.txt
 - bundle/linux/vendor/llama.cpp/llama-b8740-bin-ubuntu-x64.tar.gz
+- bundle/linux/vendor/runtime/lib/libstdc++.so.6
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-00
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-01
 - bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-02

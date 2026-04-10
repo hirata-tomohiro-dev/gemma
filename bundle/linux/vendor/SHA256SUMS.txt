@@ -11,3 +11,4 @@ fca88beda331b278d2ec4150825d54e84f9f160731ae713eaaadf26f11556df4  vendor/models/
 1322b856874c41904899b6d91036c8c1fa62b34b741fa702bf607f827ae20253  vendor/models/gemma3-1b-it-qat.gguf.part-09
 f98562cc96414e72450cb930c99ec8d4ab823ea0014486ab9556c7f17a3175ad  vendor/models/gemma3-1b-it-qat.gguf.part-10
 aa06af98d4588248e3480acda2eca2daaf49867a42fd0c114c67cb618b39b203  vendor/llama.cpp/llama-b8740-bin-ubuntu-x64.tar.gz
+bcb1a2e57f3efacc46bd7cd7eec003cd21689a8865250167aa0aafc31675b03a  vendor/runtime/lib/libstdc++.so.6

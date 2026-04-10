@@ -30,6 +30,7 @@
 `gemma` repo:
 
 - `bundle/linux/vendor/llama.cpp/llama-b8740-bin-ubuntu-x64.tar.gz`
+- `bundle/linux/vendor/runtime/lib/libstdc++.so.6`
 - `bundle/linux/vendor/models/gemma3-1b-it-qat.gguf.part-00` から `part-04`
 - `bundle/linux/install-gemma3-openai-offline.sh`
 - `bundle/linux/start-gemma3-openai-server.sh`
@@ -93,6 +94,8 @@ API_KEY=dummy HOST=0.0.0.0 PORT=8000 THREADS=4 CTX_SIZE=4096 ./bundle/linux/star
 - Model alias: `gemma3-1b-it-qat`
 
 メモリ余裕をさらに優先するなら、まず `CTX_SIZE=2048` で起動して問題ないか確認してください。
+
+この start script は、同梱している `bundle/linux/vendor/runtime/lib/libstdc++.so.6` を自動で `LD_LIBRARY_PATH` に追加します。RHEL 9.2 の標準 `libstdc++.so.6` は `GLIBCXX_3.4.29` までのため、`llama.cpp` の `GLIBCXX_3.4.30` 要求をここで吸収します。
 
 ## API 疎通確認
 
